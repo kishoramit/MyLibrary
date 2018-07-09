@@ -12,7 +12,6 @@ using namespace std;
 
 int main (int argc, char *argv[])
 {
-    BSTRes::res1();
     BSTTest::test1();
     return(0);
 }

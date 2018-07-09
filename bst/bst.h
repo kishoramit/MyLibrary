@@ -9,8 +9,11 @@ public:
     ~BinarySearchTree() { delete_all(); }
 
     void insert(uint64_t key);
+    bool remove(uint64_t key);
     uint64_t height() { return root_->height; }
     void print_ascending();
+    void print_descending();
+    void print_preorder();
 
 private:
     struct Node
@@ -28,7 +31,6 @@ private:
 
     Node *root_;
     uint64_t count_;
-    std::mutex mtx_;
     void delete_all();
     void print_node(Node *n)
     {
@@ -38,6 +40,10 @@ private:
     Node* minimum(Node* node);
     Node* maximum(Node* node);
     Node* successor(Node* node);
+    Node* predeccessor(Node* node);
+    Node* search(uint64_t key);
+    Node* merge(Node *lst, Node *rst);
+    void adjust_height(Node *from, Node *to);
 };
 
 #endif // __BST_H_INCL__
