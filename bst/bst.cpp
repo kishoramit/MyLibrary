@@ -68,6 +68,10 @@ BinarySearchTree::remove(uint64_t key)
     Node *node = search(key);
     if (node == nullptr) { return false; }
 
+#if 0
+    ///XXX: This is also a valid method to delete a node. However, it is not very
+    //AVL/RedBlock tree friendly because of the height change.
+
     // Three possibilities -
     // 1. A root node is being deleted.
     // 2. An intermediate node is being deleted.
@@ -88,6 +92,54 @@ BinarySearchTree::remove(uint64_t key)
         adjust_height(node->p, root_);
     }
 
+    delete node;
+    count_--;
+    return true;
+#endif
+
+    // Three possibilities -
+    // 1. No subtree is present. i.e. root or leaf node
+    // 2. Only one subtree is present.
+    // 3. Both subrees are present.
+
+    Node *promoted_node = nullptr;
+
+    if ((node->l == nullptr) && (node->r == nullptr))
+    {
+        // 1
+        promoted_node = nullptr;
+    }
+    else if ((node->l == nullptr) || (node->r == nullptr))
+    {
+        // 2
+        if (node->l) { promoted_node = node->l; }
+        else { promoted_node = node->r; }
+        assert(promoted_node != nullptr);
+    }
+    else
+    {
+        // 3
+        // Have the successor node take the place of the deleting node.
+        Node *s = successor(node);
+        assert(s != nullptr);
+        assert(s->l == nullptr);
+        node->key = s->key;
+
+        // Delete the redundant successor node.
+        node = s;
+        promoted_node = s->r;
+    }
+
+    if (promoted_node != nullptr) { promoted_node->p = node->p; }
+
+    if (node->p == nullptr) { root_ = promoted_node; }
+    else
+    {
+        if(lcop(node)) { node->p->l = promoted_node; }
+        else { node->p->r = promoted_node; }
+    }
+
+    adjust_height(node->p, root_);
     delete node;
     count_--;
     return true;

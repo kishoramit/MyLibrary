@@ -44,6 +44,19 @@ private:
     Node* search(uint64_t key);
     Node* merge(Node *lst, Node *rst);
     void adjust_height(Node *from, Node *to);
+    bool lcop(const Node *n)
+    {
+        if (n->p == nullptr) { return false; }
+        if (n == n->p->l) { return true; }
+        return false;
+    }
+
+    bool rcop(const Node *n)
+    {
+        if (n->p == nullptr) { return false; }
+        if (n == n->p->r) { return true; }
+        return false;
+    }
 };
 
 #endif // __BST_H_INCL__
